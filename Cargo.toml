@@ -1,0 +1,13 @@
+[package]
+
+name = "drossel-server"
+version = "0.1.0"
+authors = [ "florian.gilcher@asquera.de" ]
+
+[dependencies.drossel]
+
+git = "https://github.com/skade/drossel.git"
+
+#[[bin]]
+#
+#name = "drossel-server"

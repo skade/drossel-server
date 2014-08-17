@@ -1,0 +1,20 @@
+[root]
+name = "drossel-server"
+version = "0.1.0"
+dependencies = [
+ "drossel 0.1.0 (git+https://github.com/skade/drossel.git#23bedf7cc64f55e2145e0d45ec1cb28fd11790a6)",
+]
+
+[[package]]
+name = "drossel"
+version = "0.1.0"
+source = "git+https://github.com/skade/drossel.git#23bedf7cc64f55e2145e0d45ec1cb28fd11790a6"
+dependencies = [
+ "strand 0.1.0 (git+file:///Users/skade/Code/rust/strain#14b7f178358ed5bb1a046bc152fcc76b00e3af91)",
+]
+
+[[package]]
+name = "strand"
+version = "0.1.0"
+source = "git+file:///Users/skade/Code/rust/strain#14b7f178358ed5bb1a046bc152fcc76b00e3af91"
+
