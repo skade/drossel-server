@@ -60,6 +60,7 @@ fn main() {
           cloned_sender.send((event, sender));
           let res = receiver.recv();
           buffer.write(format!("{}", res.unwrap()).as_slice().as_bytes());
+          buffer.flush();
         },
         Err(_) => { fail!("Oha?"); }
       }
