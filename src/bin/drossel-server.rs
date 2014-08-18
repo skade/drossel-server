@@ -9,14 +9,13 @@ extern crate strand;
 
 use std::io::net::tcp::TcpListener;
 use std::io::{Acceptor, Listener};
-use drossel::*;
 use std::io::BufferedStream;
 use drossel::commands::util::get_command;
 use drossel::commands::command::Command;
-use drossel::drossel::db::{DB, DBResult};
+use drossel::drossel::types::{DBResult,Pong,Inserted,Removed};
+use drossel::drossel::db::{DB};
 use drossel::drossel::store::*;
-use drossel::drossel::events::{AsEvent};
-use strand::mutable::Event;
+use strand::mutable::{Event,AsSendableEvent};
 use strand::errors::{Errors};
 
 type ResultType = (Result<DBResult,Errors>);
@@ -54,13 +53,23 @@ fn main() {
 
           let command: Box<Command> = get_command(input).unwrap();
           let (sender, receiver): (Sender<ResultType>, Receiver<ResultType>) = channel();
-          let event = (*command).as_sendable_event(|event| {
-            event
-          });
+          let event = (*command).as_sendable_event();
           cloned_sender.send((event, sender));
-          let res = receiver.recv();
-          buffer.write(format!("{}", res.unwrap()).as_slice().as_bytes());
-          buffer.flush();
+          let res = receiver.recv().unwrap();
+          let output = match res {
+            Pong => { format!("PONG") },
+            Inserted(queue) => { format!("OK {}", queue) },
+            Removed(queue, result) => { format!("REMOVED {} {}", queue, result)}
+          };
+          println!("{}", output.as_slice().as_bytes() );
+          match write!(buffer, "{}", output) {
+            Err(_) => fail!("Failed writing to buffer"),
+            _ => {}
+          }
+          match buffer.flush() {
+            Err(_) => { fail!("Failed closing stream") },
+            _ => {}
+          }
         },
         Err(_) => { fail!("Oha?"); }
       }
