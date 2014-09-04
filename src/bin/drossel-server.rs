@@ -10,17 +10,17 @@ extern crate strand;
 use std::io::net::tcp::{TcpListener,TcpStream};
 use std::io::{Acceptor, Listener};
 use std::io::{BufferedStream,Stream};
+use std::path::Path;
 use drossel::commands::util::get_command;
 use drossel::commands::command::Command;
 use drossel::drossel::types::{DBResult,Pong,Inserted,Removed};
 use drossel::drossel::db::{DB};
-use drossel::drossel::store::*;
-use strand::mutable::{Event,AsSendableEvent};
+use drossel::drossel::journal::Journal;
+use strand::mutable::{Event,AsEvent};
 use strand::errors::{Errors};
 
-type DBEnvelope = Envelope<Box<Event<BinaryList, DBResult>+Send>,Result<DBResult, Errors>>;
+type DBEnvelope = Envelope<Box<Event<Journal, DBResult>+Send>,Result<DBResult, Errors>>;
 
-#[deriving(Send)]
 struct Envelope<M: Send, R: Send> {
   message: M,
   reply_to: Sender<R>
@@ -47,7 +47,7 @@ fn handle_stream<T: Stream>(
 
   let command: Box<Command> = get_command(input).unwrap();
   let (sender, receiver) = channel::<Result<DBResult, Errors>>();
-  let event = (*command).as_sendable_event();
+  let event = (*command).as_event();
   queue.send(Envelope { message: event, reply_to: sender });
 
   let res = receiver.recv().unwrap();
@@ -71,7 +71,8 @@ fn start_db() -> Sender<DBEnvelope> {
   let (sender, receiver) = channel::<DBEnvelope>();
   // spawn the db task
   spawn(proc() {
-    let mut db = DB::new();
+    let path = Path::new(".");
+    let mut db = DB::new(path);
     for m in receiver.iter() {
       m.reply_to.send(db.execute(m.message));
     }
