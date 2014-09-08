@@ -44,8 +44,15 @@ fn handle_stream<T: Stream>(
     mut buffer: BufferedStream<T>
 ) {
   let input = buffer.read_until('\n' as u8).unwrap();
+  let mut command: Box<Command> = get_command(input).unwrap();
+  match command.read_more_data() {
+    None => {},
+    Some(length) => {
+      let data = buffer.read_exact(length).unwrap();
+      command.set_payload(data.as_slice());
+    }
+  }
 
-  let command: Box<Command> = get_command(input).unwrap();
   let (sender, receiver) = channel::<Result<DBResult, Errors>>();
   let event = (*command).as_event();
   queue.send(Envelope { message: event, reply_to: sender });
