@@ -2,22 +2,22 @@
 name = "drossel-server"
 version = "0.1.0"
 dependencies = [
- "drossel 0.1.0 (git+https://github.com/skade/drossel.git#a5a33c78b162051de2a906814ad40095ba110f56)",
+ "drossel 0.1.0 (git+https://github.com/skade/drossel.git#496f519b2938eac1979b8ae187d401c412cf325c)",
 ]
 
 [[package]]
 name = "drossel"
 version = "0.1.0"
-source = "git+https://github.com/skade/drossel.git#a5a33c78b162051de2a906814ad40095ba110f56"
+source = "git+https://github.com/skade/drossel.git#496f519b2938eac1979b8ae187d401c412cf325c"
 dependencies = [
- "leveldb 0.1.0 (git+https://github.com/skade/leveldb.git#9578d22d19d4b7df324520da880816b1b7023d68)",
+ "leveldb 0.1.0 (git+https://github.com/skade/leveldb.git#9a6b1c4033f742ac918ca1b5d3709e3d336d679a)",
  "strand 0.1.0 (git+https://github.com/skade/strand.git#1e31eb38fef06e0a0a002372dac1934c081b1e78)",
 ]
 
 [[package]]
 name = "leveldb"
 version = "0.1.0"
-source = "git+https://github.com/skade/leveldb.git#9578d22d19d4b7df324520da880816b1b7023d68"
+source = "git+https://github.com/skade/leveldb.git#9a6b1c4033f742ac918ca1b5d3709e3d336d679a"
 
 [[package]]
 name = "strand"

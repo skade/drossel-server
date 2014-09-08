@@ -74,7 +74,7 @@ fn start_db() -> Sender<DBEnvelope> {
     let path = Path::new(".");
     let mut db = DB::new(path);
     for m in receiver.iter() {
-      m.reply_to.send(db.execute(m.message));
+      m.reply_to.send(db.execute(&*m.message));
     }
   });
 
